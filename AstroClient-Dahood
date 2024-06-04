@@ -1,46 +1,48 @@
 local lib = loadstring(game:HttpGet"https://raw.githubusercontent.com/dawid-scripts/UI-Libs/main/Vape.txt")()
 
-local win = lib:Window("AstroClient-Dahood",Color3.fromRGB(44, 120, 224), Enum.KeyCode.RightControl)
+local win = lib:Window("AstroHub-Dahood",Color3.fromRGB(44, 120, 224), Enum.KeyCode.RightControl)
 
 local tab = win:Tab("Main")
 
-Main:Button("Atm Autofarm", function()
 
-local humanoid = game.Players.LocalPlayer.Character.Humanoid
-local tool = game.Players.LocalPlayer.Backpack.Combat
+tab:Toggle("Atm Autofarm",false, function(t)
 
-local function getMoneyAroundMe() 
-    wait(0.5)
-    for i, money in ipairs(game.Workspace.Ignored.Drop:GetChildren()) do
-        if money.Name == "MoneyDrop" and (money.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 20 then
-            fireclickdetector(money.ClickDetector)
-            wait(0.5)
-        end  
-    end
-end
-
-local function startAutoFarm() 
-    humanoid:EquipTool(tool)
-
-    for i, v in ipairs(game.Workspace.Cashiers:GetChildren()) do
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Open.CFrame * CFrame.new(0, 0, 2)
-
-        for i = 0, 10 do -- Adjusted to 10 iterations
-            wait(0.5)
-            tool:Activate()
+    local humanoid = game.Players.LocalPlayer.Character.Humanoid
+    local tool = game.Players.LocalPlayer.Backpack.Combat
+    
+    local function getMoneyAroundMe() 
+        wait(0.5)
+        for i, money in ipairs(game.Workspace.Ignored.Drop:GetChildren()) do
+            if money.Name == "MoneyDrop" and (money.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 20 then
+                fireclickdetector(money.ClickDetector)
+                wait(0.5)
+            end  
         end
-
-        getMoneyAroundMe()
     end
-
-    wait(0.5)
-end
-
-startAutoFarm()
+    
+    local function startAutoFarm() 
+        humanoid:EquipTool(tool)
+    
+        for i, v in ipairs(game.Workspace.Cashiers:GetChildren()) do
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Open.CFrame * CFrame.new(0, 0, 2)
+    
+            for i = 0, 10 do -- Adjusted to 10 iterations
+                wait(0.5)
+                tool:Activate()
+            end
+    
+            getMoneyAroundMe()
+        end
+    
+        wait(0.5)
+    end
+    
+    startAutoFarm()
+    
 end)
 
-Main:Toggle("CashAura", false, function(t)
 
+tab:Toggle("Cash Aura",false, function(t)
 while wait() do
  
  
@@ -54,5 +56,6 @@ while wait() do
      
      getMoneyAroundMe()
     end
+
 end)
 
