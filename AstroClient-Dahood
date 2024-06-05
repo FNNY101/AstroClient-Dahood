@@ -1,61 +1,78 @@
-local lib = loadstring(game:HttpGet"https://raw.githubusercontent.com/dawid-scripts/UI-Libs/main/Vape.txt")()
+local lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/UI-Libs/main/Vape.txt"))()
 
-local win = lib:Window("AstroHub-Dahood",Color3.fromRGB(44, 120, 224), Enum.KeyCode.RightControl)
-
+local win = lib:Window("AstroClient", Color3.fromRGB(54, 1, 63), Enum.KeyCode.RightControl)
 local tab = win:Tab("Main")
 
+local isEnabled = false
+local autofarmCoroutine
 
-tab:Toggle("Atm Autofarm",false, function(t)
+local cashAuraEnabled = false -- Track the state of the cash aura script
 
+local function getMoneyAroundMe() 
+    wait(0.7)
+    for i, money in ipairs(game.Workspace.Ignored.Drop:GetChildren()) do
+        if not cashAuraEnabled then return end -- Check if cash aura is enabled
+        if money.Name == "MoneyDrop" and (money.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 20 then
+            fireclickdetector(money.ClickDetector)
+            wait(0.7) -- Adjusted wait time to 0.8 seconds between each money pickup
+        end  
+    end
+end
+
+local NotificationHolder = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Module.Lua"))()
+local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Client.Lua"))()
+
+Notification:Notify(
+    {Title = "Atm BUG", Description = "If the Atm-Farm teleports you to an empty atm, wait roughly 1 min, then re-enable it."},
+    {OutlineColor = Color3.fromRGB(80, 80, 80),Time = 10, Type = "option"},
+    {Image = "http://www.roblox.com/asset/?id=6023426923", ImageColor = Color3.fromRGB(255, 84, 84), Callback = function(State) print(tostring(State)) end}
+)
+
+local function startAutoFarm() 
     local humanoid = game.Players.LocalPlayer.Character.Humanoid
     local tool = game.Players.LocalPlayer.Backpack.Combat
-    
-    local function getMoneyAroundMe() 
-        wait(0.5)
-        for i, money in ipairs(game.Workspace.Ignored.Drop:GetChildren()) do
-            if money.Name == "MoneyDrop" and (money.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 20 then
-                fireclickdetector(money.ClickDetector)
-                wait(0.5)
-            end  
-        end
-    end
-    
-    local function startAutoFarm() 
-        humanoid:EquipTool(tool)
-    
+
+    humanoid:EquipTool(tool)
+    while isEnabled do
         for i, v in ipairs(game.Workspace.Cashiers:GetChildren()) do
+            if not isEnabled then return end
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Open.CFrame * CFrame.new(0, 0, 2)
-    
-            for i = 0, 10 do -- Adjusted to 10 iterations
+
+            wait(0.5) -- Adjusted wait time to 2 seconds after teleporting
+            
+            for i = 0, 10 do
+                if not isEnabled then return end
                 wait(0.5)
                 tool:Activate()
             end
-    
             getMoneyAroundMe()
         end
-    
-        wait(0.5)
     end
-    
-    startAutoFarm()
-    
-end)
+end
 
-
-tab:Toggle("Cash Aura",false, function(t)
-while wait() do
- 
- 
-    local function getMoneyAroundMe() 
-        for i, money in ipairs(game.Workspace.Ignored.Drop:GetChildren()) do
-            if money.Name == "MoneyDrop" and (money.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 20 then
-                fireclickdetector(money.ClickDetector)
-            end  
+tab:Toggle("Atm Autofarm", false, function(t)
+    isEnabled = t
+    if isEnabled then
+        if not autofarmCoroutine then
+            autofarmCoroutine = coroutine.create(startAutoFarm)
+            coroutine.resume(autofarmCoroutine)
         end
+    else
+        autofarmCoroutine = nil
     end
-     
-     getMoneyAroundMe()
-    end
+end)
+
+tab:Toggle("Cash Aura", false, function(t)
+    cashAuraEnabled = t -- Update the state of the cash aura script
+end)
+
+
+tab:Button("Button", function()
+    loadstring(game:HttpGet"https://raw.githubusercontent.com/FNNY101/Remove-textures/main/remove%20textures")()
+    end)
+
+tab:Button("", function()
 
 end)
+
 
