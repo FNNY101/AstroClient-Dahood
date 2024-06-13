@@ -3,11 +3,6 @@ local lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scr
 local win = lib:Window("AstroClient", Color3.fromRGB(54, 1, 63), Enum.KeyCode.RightControl)
 local tab = win:Tab("Main")
 
-local isEnabled = false
-local autofarmCoroutine
-
-local cashAuraEnabled = false -- Track the state of the cash aura script
-
 
 while not game:IsLoaded() do wait() end
 
@@ -29,6 +24,11 @@ else
   end)
 end
 
+local isEnabled = false
+local autofarmCoroutine
+
+local cashAuraEnabled = false -- Track the state of the cash aura script
+
 local function getMoneyAroundMe() 
     wait(0.7)
     for i, money in ipairs(game.Workspace.Ignored.Drop:GetChildren()) do
@@ -40,14 +40,26 @@ local function getMoneyAroundMe()
     end
 end
 
-local NotificationHolder = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Module.Lua"))()
-local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Client.Lua"))()
+local moneyLabel = tab:Label("Money: $0")
 
-Notification:Notify(
-    {Title = "Atm BUG", Description = "If the Atm-Farm teleports you to an empty atm, wait roughly 1 min, then re-enable it."},
-    {OutlineColor = Color3.fromRGB(80, 80, 80),Time = 10, Type = "option"},
-    {Image = "http://www.roblox.com/asset/?id=6023426923", ImageColor = Color3.fromRGB(255, 84, 84), Callback = function(State) print(tostring(State)) end}
-)
+local function updateMoneyCounter()
+    wait(3) -- Initial wait to allow GUI to load
+    local startMoney = tonumber(game.Players.LocalPlayer.PlayerGui.MainScreenGui.MoneyText.Text:gsub(",", ""):sub(2))
+    if not startMoney then
+        warn("Failed to get starting money")
+        return
+    end
+    print("Starting money:", startMoney)
+    while isEnabled do
+        local currentMoney = tonumber(game.Players.LocalPlayer.PlayerGui.MainScreenGui.MoneyText.Text:gsub(",", ""):sub(2))
+        if not currentMoney then
+            warn("Failed to get current money")
+            return
+        end
+        moneyLabel:SetText("Money: $" .. tostring(currentMoney - startMoney))
+        wait(1) -- Update interval
+    end
+end
 
 local function startAutoFarm() 
     local humanoid = game.Players.LocalPlayer.Character.Humanoid
@@ -78,6 +90,7 @@ tab:Toggle("Atm Autofarm", false, function(t)
             autofarmCoroutine = coroutine.create(startAutoFarm)
             coroutine.resume(autofarmCoroutine)
         end
+        coroutine.wrap(updateMoneyCounter)()
     else
         autofarmCoroutine = nil
     end
@@ -86,14 +99,3 @@ end)
 tab:Toggle("Cash Aura", false, function(t)
     cashAuraEnabled = t -- Update the state of the cash aura script
 end)
-
-
-tab:Button("Button", function()
-    loadstring(game:HttpGet"https://raw.githubusercontent.com/FNNY101/Remove-textures/main/remove%20textures")()
-    end)
-
-tab:Button("", function()
-
-end)
-
-
