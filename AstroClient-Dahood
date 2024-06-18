@@ -71,7 +71,7 @@ local function startAutoFarm()
             if not isEnabled then return end
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Open.CFrame * CFrame.new(0, 0, 2)
 
-            wait(0.1) -- Adjusted wait time to 2 seconds after teleporting
+            wait(0) -- Adjusted wait time to 2 seconds after teleporting
             
             for i = 0, 10 do
                 if not isEnabled then return end
