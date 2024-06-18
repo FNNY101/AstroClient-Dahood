@@ -82,6 +82,6 @@ tab:Toggle("Cash Aura", false, function(t)
     end
 end)
 
-tab:Button("Button", function()
+tab:Button("Remove all textures", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Remove-textures/main/remove%20textures"))()
 end)
