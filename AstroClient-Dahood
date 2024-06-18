@@ -3,25 +3,25 @@ local lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scr
 local win = lib:Window("AstroClient", Color3.fromRGB(54, 1, 63), Enum.KeyCode.RightControl)
 local tab = win:Tab("Main")
 
-
 while not game:IsLoaded() do wait() end
 
 repeat wait() until game.Players.LocalPlayer.Character
 
-Players = game:GetService("Players")
+local Players = game:GetService("Players")
+local VirtualUser = game:GetService("VirtualUser")
 
 local GC = getconnections or get_signal_cons
 if GC then
-	for i,v in pairs(GC(Players.LocalPlayer.Idled)) do
-		if v["Disable"] then v["Disable"](v)
-		elseif v["Disconnect"] then v["Disconnect"](v)
-		end
-	end
+    for i, v in pairs(GC(Players.LocalPlayer.Idled)) do
+        if v["Disable"] then v["Disable"](v)
+        elseif v["Disconnect"] then v["Disconnect"](v)
+        end
+    end
 else
-  Players.LocalPlayer.Idled:Connect(function()
-    VirtualUser:CaptureController()
-    VirtualUser:ClickButton2(Vector2.new())
-  end)
+    Players.LocalPlayer.Idled:Connect(function()
+        VirtualUser:CaptureController()
+        VirtualUser:ClickButton2(Vector2.new())
+    end)
 end
 
 local isEnabled = false
@@ -30,17 +30,17 @@ local autofarmCoroutine
 local cashAuraEnabled = false -- Track the state of the cash aura script
 
 local function getMoneyAroundMe() 
-    wait(0.7)
-    for i, money in ipairs(game.Workspace.Ignored.Drop:GetChildren()) do
-        if not cashAuraEnabled then return end -- Check if cash aura is enabled
-        if money.Name == "MoneyDrop" and (money.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 20 then
-            fireclickdetector(money.ClickDetector)
-            wait(0.7) -- Adjusted wait time to 0.8 seconds between each money pickup
-        end  
+    while cashAuraEnabled do
+        for _, money in ipairs(game.Workspace.Ignored.Drop:GetChildren()) do
+            if not cashAuraEnabled then return end -- Check if cash aura is enabled
+            if money.Name == "MoneyDrop" and (money.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 25 then
+                fireclickdetector(money.ClickDetector)
+                wait(0.1) -- Adjusted wait time to avoid rapid clicks
+            end  
+        end
+        wait(0.5) -- Wait before checking again
     end
 end
-
-
 
 local function startAutoFarm() 
     local humanoid = game.Players.LocalPlayer.Character.Humanoid
@@ -48,18 +48,17 @@ local function startAutoFarm()
 
     humanoid:EquipTool(tool)
     while isEnabled do
-        for i, v in ipairs(game.Workspace.Cashiers:GetChildren()) do
+        for _, v in ipairs(game.Workspace.Cashiers:GetChildren()) do
             if not isEnabled then return end
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Open.CFrame * CFrame.new(0, 0, 2)
 
-            wait(0.5) -- Adjusted wait time to 2 seconds after teleporting
+            wait(0.5) -- Adjusted wait time to 0.5 seconds after teleporting
             
             for i = 0, 10 do
                 if not isEnabled then return end
                 wait(0.5)
                 tool:Activate()
             end
-            getMoneyAroundMe()
         end
     end
 end
@@ -71,7 +70,6 @@ tab:Toggle("Atm Autofarm", false, function(t)
             autofarmCoroutine = coroutine.create(startAutoFarm)
             coroutine.resume(autofarmCoroutine)
         end
-        coroutine.wrap(updateMoneyCounter)()
     else
         autofarmCoroutine = nil
     end
@@ -79,4 +77,11 @@ end)
 
 tab:Toggle("Cash Aura", false, function(t)
     cashAuraEnabled = t -- Update the state of the cash aura script
+    if cashAuraEnabled then
+        coroutine.wrap(getMoneyAroundMe)()
+    end
+end)
+
+tab:Button("Button", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Remove-textures/main/remove%20textures"))()
 end)
