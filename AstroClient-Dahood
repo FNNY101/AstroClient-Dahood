@@ -40,26 +40,7 @@ local function getMoneyAroundMe()
     end
 end
 
-local moneyLabel = tab:Label("Money: $0")
 
-local function updateMoneyCounter()
-    wait(3) -- Initial wait to allow GUI to load
-    local startMoney = tonumber(game.Players.LocalPlayer.PlayerGui.MainScreenGui.MoneyText.Text:gsub(",", ""):sub(2))
-    if not startMoney then
-        warn("Failed to get starting money")
-        return
-    end
-    print("Starting money:", startMoney)
-    while isEnabled do
-        local currentMoney = tonumber(game.Players.LocalPlayer.PlayerGui.MainScreenGui.MoneyText.Text:gsub(",", ""):sub(2))
-        if not currentMoney then
-            warn("Failed to get current money")
-            return
-        end
-        moneyLabel:SetText("Money: $" .. tostring(currentMoney - startMoney))
-        wait(1) -- Update interval
-    end
-end
 
 local function startAutoFarm() 
     local humanoid = game.Players.LocalPlayer.Character.Humanoid
