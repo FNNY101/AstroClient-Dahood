@@ -3,6 +3,8 @@ local lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scr
 local win = lib:Window("AstroClient", Color3.fromRGB(54, 1, 63), Enum.KeyCode.RightControl)
 local tab = win:Tab("Main")
 
+loadstring(game:HttpGet('https://raw.githubusercontent.com/GS21Official/Seller-Tools/main/DaHood%20Cash%20Counter'))()
+
 
 while not game:IsLoaded() do wait() end
 
