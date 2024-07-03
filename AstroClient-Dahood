@@ -4,63 +4,40 @@ local win = lib:Window("AstroClient", Color3.fromRGB(54, 1, 63), Enum.KeyCode.Ri
 local tab = win:Tab("Main")
 
 while not game:IsLoaded() do wait() end
-
 repeat wait() until game.Players.LocalPlayer.Character
 
-Players = game:GetService("Players")
+local Players = game:GetService("Players")
 
 local GC = getconnections or get_signal_cons
 if GC then
-	for i,v in pairs(GC(Players.LocalPlayer.Idled)) do
-		if v["Disable"] then v["Disable"](v)
-		elseif v["Disconnect"] then v["Disconnect"](v)
-		end
-	end
+    for i,v in pairs(GC(Players.LocalPlayer.Idled)) do
+        if v["Disable"] then v["Disable"](v)
+        elseif v["Disconnect"] then v["Disconnect"](v)
+        end
+    end
 else
-  Players.LocalPlayer.Idled:Connect(function()
-    VirtualUser:CaptureController()
-    VirtualUser:ClickButton2(Vector2.new())
-  end)
+    Players.LocalPlayer.Idled:Connect(function()
+        VirtualUser:CaptureController()
+        VirtualUser:ClickButton2(Vector2.new())
+    end)
 end
 
 local isEnabled = false
-local autofarmCoroutine
-
+local autofarmCoroutine = nil
 local cashAuraEnabled = false -- Track the state of the cash aura script
 
-local function getMoneyAroundMe() 
+local function getMoneyAroundMe()
     wait(0.7)
     for i, money in ipairs(game.Workspace.Ignored.Drop:GetChildren()) do
         if not cashAuraEnabled then return end -- Check if cash aura is enabled
         if money.Name == "MoneyDrop" and (money.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 20 then
             fireclickdetector(money.ClickDetector)
             wait(0.7) -- Adjusted wait time to 0.8 seconds between each money pickup
-        end  
-    end
-end
-
-local moneyLabel = tab:Label("Money: $0")
-
-local function updateMoneyCounter()
-    wait(3) -- Initial wait to allow GUI to load
-    local startMoney = tonumber(game.Players.LocalPlayer.PlayerGui.MainScreenGui.MoneyText.Text:gsub(",", ""):sub(2))
-    if not startMoney then
-        warn("Failed to get starting money")
-        return
-    end
-    print("Starting money:", startMoney)
-    while isEnabled do
-        local currentMoney = tonumber(game.Players.LocalPlayer.PlayerGui.MainScreenGui.MoneyText.Text:gsub(",", ""):sub(2))
-        if not currentMoney then
-            warn("Failed to get current money")
-            return
         end
-        moneyLabel:SetText("Money: $" .. tostring(currentMoney - startMoney))
-        wait(1) -- Update interval
     end
 end
 
-local function startAutoFarm() 
+local function startAutoFarm()
     local humanoid = game.Players.LocalPlayer.Character.Humanoid
     local tool = game.Players.LocalPlayer.Backpack.Combat
 
@@ -70,8 +47,8 @@ local function startAutoFarm()
             if not isEnabled then return end
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Open.CFrame * CFrame.new(0, 0, 2)
 
-            wait(0) -- Adjusted wait time to 2 seconds after teleporting
-            
+            wait(0.5) -- Adjusted wait time to 2 seconds after teleporting
+
             for i = 0, 10 do
                 if not isEnabled then return end
                 wait(0.5)
@@ -87,11 +64,15 @@ tab:Toggle("Atm Autofarm", false, function(t)
     if isEnabled then
         if not autofarmCoroutine then
             autofarmCoroutine = coroutine.create(startAutoFarm)
-            coroutine.resume(autofarmCoroutine)
         end
-        coroutine.wrap(updateMoneyCounter)()
+        coroutine.resume(autofarmCoroutine)
+
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Remove%20textures"))()
     else
-        autofarmCoroutine = nil
+        if autofarmCoroutine then
+            coroutine.yield(autofarmCoroutine)
+            autofarmCoroutine = nil
+        end
     end
 end)
 
@@ -99,6 +80,6 @@ tab:Toggle("Cash Aura", false, function(t)
     cashAuraEnabled = t -- Update the state of the cash aura script
 end)
 
-tab:Button("Remove all textures", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Remove-textures/main/remove%20textures"))()
+tab:Button("Potato Graphics", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Remove%20textures"))()
 end)
