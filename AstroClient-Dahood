@@ -3,6 +3,7 @@ local lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scr
 local win = lib:Window("AstroClient", Color3.fromRGB(54, 1, 63), Enum.KeyCode.RightControl)
 local tab = win:Tab("Main")
 
+
 while not game:IsLoaded() do wait() end
 repeat wait() until game.Players.LocalPlayer.Character
 
@@ -63,16 +64,27 @@ tab:Toggle("Atm Autofarm", false, function(t)
     isEnabled = t
     if isEnabled then
         setfpscap(15) -- Set FPS cap to 15 when autofarm is enabled
-
+        wait(0.2)
+game.StarterGui:SetCore("SendNotification", {
+Title = "Fps"; -- the title 
+Text = "Fps set to 15"; -- what the text says 
+Duration = 5; -- how long the notification should in secounds
+})
         if not autofarmCoroutine then
             autofarmCoroutine = coroutine.create(startAutoFarm)
             loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/CPU%20savers%20GUI"))()
+            lib:Notification("Press "L" to toggle the gui on and off)
         end
         coroutine.resume(autofarmCoroutine)
         loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Remove%20textures"))()
     else
-        setfpscap(60) -- Set FPS cap to 60 when autofarm is disabled
-
+        setfpscap(60)
+        wait(0.2)
+game.StarterGui:SetCore("SendNotification", {
+Title = "Fps"; -- the title 
+Text = "Fps set to 60"; -- what the text says 
+Duration = 5; -- how long the notification should in secounds
+}) -- Set FPS cap to 60 when autofarm is disabled
         if autofarmCoroutine then
             coroutine.yield(autofarmCoroutine)
             autofarmCoroutine = nil
