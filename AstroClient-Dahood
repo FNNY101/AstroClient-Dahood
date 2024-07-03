@@ -62,13 +62,17 @@ end
 tab:Toggle("Atm Autofarm", false, function(t)
     isEnabled = t
     if isEnabled then
+        setfpscap(15) -- Set FPS cap to 15 when autofarm is enabled
+
         if not autofarmCoroutine then
             autofarmCoroutine = coroutine.create(startAutoFarm)
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/CPU%20savers%20GUI"))()
         end
         coroutine.resume(autofarmCoroutine)
-
         loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Remove%20textures"))()
     else
+        setfpscap(60) -- Set FPS cap to 60 when autofarm is disabled
+
         if autofarmCoroutine then
             coroutine.yield(autofarmCoroutine)
             autofarmCoroutine = nil
@@ -83,3 +87,5 @@ end)
 tab:Button("Potato Graphics", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Remove%20textures"))()
 end)
+
+
