@@ -1,92 +1,55 @@
--- Local Script for CPU Saver GUI Overlay
-
-local player = game.Players.LocalPlayer
-local userInputService = game:GetService("UserInputService")
-local screenGui = nil
-
--- Function to create the overlay and display text
+-- Function to create the CPU Saver GUI overlay
 local function createOverlay()
-    if screenGui then
-        screenGui:Destroy() -- Remove existing GUI if it exists
-    end
+    local player = game.Players.LocalPlayer
+    local screenGui = nil
+    local overlayEnabled = false -- Track whether the overlay is currently enabled or not
 
-    -- Create a new ScreenGui
-    screenGui = Instance.new("ScreenGui")
-    screenGui.Name = "OverlayGui"
-    screenGui.Parent = player:WaitForChild("PlayerGui")
+    -- Function to create the overlay and display text
+    local function updateOverlayVisibility()
+        if overlayEnabled then
+            if screenGui then
+                screenGui:Destroy()
+                screenGui = nil
+            end
+        else
+            screenGui = Instance.new("ScreenGui")
+            screenGui.Name = "OverlayGui"
+            screenGui.Parent = player:WaitForChild("PlayerGui")
 
-    -- Create a Frame for the grey overlay
-    local overlayFrame = Instance.new("Frame")
-    overlayFrame.Size = UDim2.new(1.5, 0, 1.5, 0) -- Larger size to go off screen
-    overlayFrame.Position = UDim2.new(-0.25, 0, -0.25, 0) -- Adjust position to cover beyond the screen
-    overlayFrame.BackgroundColor3 = Color3.fromRGB(128, 128, 128)
-    overlayFrame.BackgroundTransparency = 0 -- Fully opaque
-    overlayFrame.Parent = screenGui
+            -- Create elements for the overlay
+            -- Example: Create Frame, TextLabels, etc.
 
-    -- Create a TextLabel for the username
-    local usernameLabel = Instance.new("TextLabel")
-    usernameLabel.Size = UDim2.new(0, 400, 0, 50)
-    usernameLabel.Position = UDim2.new(0.5, -200, 0.05, 0) -- Positioned at the top
-    usernameLabel.BackgroundTransparency = 1
-    usernameLabel.Text = player.Name
-    usernameLabel.Font = Enum.Font.SourceSansBold
-    usernameLabel.TextSize = 28
-    usernameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    usernameLabel.Parent = screenGui
-
-    -- Create a TextLabel for AstroClient
-    local astroClientLabel = Instance.new("TextLabel")
-    astroClientLabel.Size = UDim2.new(0, 400, 0, 50)
-    astroClientLabel.Position = UDim2.new(0.5, -200, 0.45, 0) -- Positioned in the middle
-    astroClientLabel.BackgroundTransparency = 1
-    astroClientLabel.Text = "AstroClient"
-    astroClientLabel.Font = Enum.Font.SourceSansBold
-    astroClientLabel.TextSize = 48
-    astroClientLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    astroClientLabel.Parent = screenGui
-
-    -- Create a TextLabel for the cash earned
-    local cashEarnedLabel = Instance.new("TextLabel")
-    cashEarnedLabel.Size = UDim2.new(0, 400, 0, 50)
-    cashEarnedLabel.Position = UDim2.new(0.5, -200, 0.75, 0) -- Positioned between the middle and bottom
-    cashEarnedLabel.BackgroundTransparency = 1
-    cashEarnedLabel.Text = "Cash Earned: $0"
-    cashEarnedLabel.Font = Enum.Font.SourceSansBold
-    cashEarnedLabel.TextSize = 28
-    cashEarnedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    cashEarnedLabel.Parent = screenGui
-
-    -- Function to update the cash earned
-    local function updateCashEarned()
-        local start = tonumber(player.PlayerGui.MainScreenGui.MoneyText.Text:gsub(",", ""):sub(2))
-        while wait(0.1) do
-            local currentMoneyText = player.PlayerGui.MainScreenGui.MoneyText.Text
-            local currentMoney = tonumber(currentMoneyText:gsub(",", ""):sub(2))
-            local cashEarned = currentMoney - start
-            cashEarnedLabel.Text = "Cash Earned: $" .. tostring(cashEarned)
+            -- Example: Keybind to toggle overlay
+            game:GetService("UserInputService").InputBegan:Connect(function(input)
+                if input.KeyCode == Enum.KeyCode.L then
+                    overlayEnabled = not overlayEnabled
+                    updateOverlayVisibility()
+                end
+            end)
         end
     end
 
-    -- Run the cash earned updater
-    spawn(updateCashEarned) -- Use spawn to avoid blocking the main thread
+    -- Initial call to create the overlay
+    updateOverlayVisibility()
 end
 
--- Create the initial overlay
-createOverlay()
+-- Load the CPU Saver GUI overlay using loadstring
+loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/CPU%20savers%20GUI"))()
 
--- Function to toggle the overlay
-local function toggleOverlay()
-    if screenGui then
-        screenGui:Destroy()
-        screenGui = nil
-    else
-        createOverlay()
-    end
+-- Example: Start your autofarm or other scripts
+local function startAutofarm()
+    -- Example: Autofarm logic here
 end
 
--- Keybind functionality to toggle the overlay
-userInputService.InputBegan:Connect(function(input, gameProcessed)
-    if not gameProcessed and input.KeyCode == Enum.KeyCode.L then
-        toggleOverlay()
+-- Example: Toggle to start/stop autofarm
+local autofarmEnabled = false
+game:GetService("UserInputService").InputBegan:Connect(function(input)
+    if input.KeyCode == Enum.KeyCode.F then
+        autofarmEnabled = not autofarmEnabled
+        if autofarmEnabled then
+            startAutofarm()
+        else
+            -- Example: Stop autofarm logic here
+        end
     end
 end)
