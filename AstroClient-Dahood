@@ -73,7 +73,11 @@ Duration = 5; -- how long the notification should in secounds
         if not autofarmCoroutine then
             autofarmCoroutine = coroutine.create(startAutoFarm)
             loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/CPU%20savers%20GUI"))()
-            lib:Notification("Press "L" to toggle the gui on and off)
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "Gui"; -- the title 
+                Text = "Press L to toggle the gui on and off"; -- what the text says 
+                Duration = 5; -- how long the notification should in secounds
+                }) -- Set FPS cap to 60 when autofarm is disabled
         end
         coroutine.resume(autofarmCoroutine)
         loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Remove%20textures"))()
