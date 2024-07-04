@@ -100,8 +100,6 @@ tab:Toggle("Cash Aura", false, function(t)
     cashAuraEnabled = t -- Update the state of the cash aura script
 end)
 
-tab:Button("Potato Graphics", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Remove%20textures"))()
+tab:Button("Cash ESP", function()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Cash%20ESP"))()
 end)
-
-
