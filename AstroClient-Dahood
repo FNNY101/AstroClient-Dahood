@@ -1,17 +1,18 @@
 local lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/UI-Libs/main/Vape.txt"))()
 
 local win = lib:Window("AstroClient", Color3.fromRGB(54, 1, 63), Enum.KeyCode.RightControl)
-local tab = win:Tab("Main")
-
+local mainTab = win:Tab("Main")
+local miscTab = win:Tab("Misc")
 
 while not game:IsLoaded() do wait() end
 repeat wait() until game.Players.LocalPlayer.Character
 
 local Players = game:GetService("Players")
+local VirtualUser = game:GetService("VirtualUser")
 
 local GC = getconnections or get_signal_cons
 if GC then
-    for i,v in pairs(GC(Players.LocalPlayer.Idled)) do
+    for i, v in pairs(GC(Players.LocalPlayer.Idled)) do
         if v["Disable"] then v["Disable"](v)
         elseif v["Disconnect"] then v["Disconnect"](v)
         end
@@ -25,15 +26,15 @@ end
 
 local isEnabled = false
 local autofarmCoroutine = nil
-local cashAuraEnabled = false -- Track the state of the cash aura script
+local cashAuraEnabled = false
 
 local function getMoneyAroundMe()
     wait(0.7)
     for i, money in ipairs(game.Workspace.Ignored.Drop:GetChildren()) do
-        if not cashAuraEnabled then return end -- Check if cash aura is enabled
+        if not cashAuraEnabled then return end
         if money.Name == "MoneyDrop" and (money.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 20 then
             fireclickdetector(money.ClickDetector)
-            wait(0.7) -- Adjusted wait time to 0.8 seconds between each money pickup
+            wait(0.7)
         end
     end
 end
@@ -48,7 +49,7 @@ local function startAutoFarm()
             if not isEnabled then return end
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Open.CFrame * CFrame.new(0, 0, 2)
 
-            wait(0.5) -- Adjusted wait time to 2 seconds after teleporting
+            wait(0.5)
 
             for i = 0, 10 do
                 if not isEnabled then return end
@@ -60,35 +61,35 @@ local function startAutoFarm()
     end
 end
 
-tab:Toggle("Atm Autofarm", false, function(t)
+mainTab:Toggle("Atm Autofarm", false, function(t)
     isEnabled = t
     if isEnabled then
-        setfpscap(15) -- Set FPS cap to 15 when autofarm is enabled
+        setfpscap(15)
         wait(0.2)
-game.StarterGui:SetCore("SendNotification", {
-Title = "Fps"; -- the title 
-Text = "Fps set to 15"; -- what the text says 
-Duration = 5; -- how long the notification should in secounds
-})
+        game.StarterGui:SetCore("SendNotification", {
+            Title = "Fps",
+            Text = "Fps set to 15",
+            Duration = 5
+        })
         if not autofarmCoroutine then
             autofarmCoroutine = coroutine.create(startAutoFarm)
+            coroutine.resume(autofarmCoroutine)
             loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/CPU%20savers%20GUI"))()
             game.StarterGui:SetCore("SendNotification", {
-                Title = "Gui"; -- the title 
-                Text = "Press L to toggle the gui on and off"; -- what the text says 
-                Duration = 5; -- how long the notification should in secounds
-                }) -- Set FPS cap to 60 when autofarm is disabled
+                Title = "Gui",
+                Text = "Press L to toggle the gui on and off",
+                Duration = 5
+            })
         end
-        coroutine.resume(autofarmCoroutine)
         loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Remove%20textures"))()
     else
         setfpscap(60)
         wait(0.2)
-game.StarterGui:SetCore("SendNotification", {
-Title = "Fps"; -- the title 
-Text = "Fps set to 60"; -- what the text says 
-Duration = 5; -- how long the notification should in secounds
-}) -- Set FPS cap to 60 when autofarm is disabled
+        game.StarterGui:SetCore("SendNotification", {
+            Title = "Fps",
+            Text = "Fps set to 60",
+            Duration = 5
+        })
         if autofarmCoroutine then
             coroutine.yield(autofarmCoroutine)
             autofarmCoroutine = nil
@@ -96,10 +97,14 @@ Duration = 5; -- how long the notification should in secounds
     end
 end)
 
-tab:Toggle("Cash Aura", false, function(t)
-    cashAuraEnabled = t -- Update the state of the cash aura script
+mainTab:Toggle("Cash Aura", false, function(t)
+    cashAuraEnabled = t
 end)
 
-tab:Button("Cash ESP", function()
-   loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Cash%20ESP"))()
+mainTab:Button("Cash ESP", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Cash%20ESP"))()
+end)
+
+miscTab:Button("Potato Graphics", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Remove%20textures"))()
 end)
