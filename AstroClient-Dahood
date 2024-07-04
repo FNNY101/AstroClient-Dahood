@@ -1,8 +1,9 @@
 local lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/UI-Libs/main/Vape.txt"))()
 
 local win = lib:Window("AstroClient", Color3.fromRGB(54, 1, 63), Enum.KeyCode.RightControl)
-local mainTab = win:Tab("Main")
-local miscTab = win:Tab("Misc")
+local MainTab = win:Tab("Main")
+local TeleportsTab = win:Tab("Teleports")
+local MiscTab = win:Tab("Misc")
 
 while not game:IsLoaded() do wait() end
 repeat wait() until game.Players.LocalPlayer.Character
@@ -42,7 +43,6 @@ end
 local function startAutoFarm()
     local humanoid = game.Players.LocalPlayer.Character.Humanoid
     local tool = game.Players.LocalPlayer.Backpack.Combat
-
     humanoid:EquipTool(tool)
     while isEnabled do
         for i, v in ipairs(game.Workspace.Cashiers:GetChildren()) do
@@ -61,7 +61,9 @@ local function startAutoFarm()
     end
 end
 
-mainTab:Toggle("Atm Autofarm", false, function(t)
+-- Main
+
+MainTab:Toggle("Atm Autofarm", false, function(t)
     isEnabled = t
     if isEnabled then
         setfpscap(15)
@@ -74,14 +76,14 @@ mainTab:Toggle("Atm Autofarm", false, function(t)
         if not autofarmCoroutine then
             autofarmCoroutine = coroutine.create(startAutoFarm)
             coroutine.resume(autofarmCoroutine)
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/CPU%20savers%20GUI"))()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Guis/Cpu%20Saver"))()
             game.StarterGui:SetCore("SendNotification", {
                 Title = "Gui",
                 Text = "Press L to toggle the gui on and off",
                 Duration = 5
             })
         end
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Remove%20textures"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Guis/Potato%20Graphics"))()
     else
         setfpscap(60)
         wait(0.2)
@@ -97,14 +99,27 @@ mainTab:Toggle("Atm Autofarm", false, function(t)
     end
 end)
 
-mainTab:Toggle("Cash Aura", false, function(t)
+MainTab:Toggle("Cash Aura", false, function(t)
     cashAuraEnabled = t
+    if cashAuraEnabled then
+        getMoneyAroundMe()
+    end
 end)
 
-mainTab:Button("Cash ESP", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Cash%20ESP"))()
+MainTab:Button("Cash ESP", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Guis/Cash%20ESP"))()
 end)
 
-miscTab:Button("Potato Graphics", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Remove%20textures"))()
+-- Teleports
+TeleportsTab:Button("Bank", function()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Teleports/Bank%20Tp"))()
 end)
+
+TeleportsTab:Button("Hood Fitness", function()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Teleports/Hood%20fitness%20TP"))()
+end)
+
+-- Misc
+
+-- MiscTab:Button("Potato Graphics", function()
+-- end)
