@@ -1,0 +1,9 @@
+local targetPosition = Vector3.new(-373, 18.75, -346)
+local player = game.Players.LocalPlayer
+while not player.Character do
+    wait()
+end
+local character = player.Character or player.CharacterAdded:Wait()
+if character and character:FindFirstChild("HumanoidRootPart") then
+    character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+end
