@@ -72,7 +72,17 @@ local function newStartAutoFarm()
     humanoid:EquipTool(tool)
 
     while isNewEnabled do
-        -- New autofarm logic goes here
+        -- Example: Knife autofarm logic (replace with actual knife logic)
+        for i, enemy in ipairs(game.Workspace.Enemies:GetChildren()) do
+            if isNewEnabled then
+                humanoid:MoveTo(enemy.Position)
+                wait(1)
+                tool:Activate()
+                wait(0.5)
+            else
+                break
+            end
+        end
         wait(1)
     end
 end
