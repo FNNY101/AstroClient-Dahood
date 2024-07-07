@@ -1,0 +1,156 @@
+local lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/UI-Libs/main/Vape.txt"))()
+local win = lib:Window("AstroClient", Color3.fromRGB(54, 1, 63), Enum.KeyCode.RightControl)
+local MainTab = win:Tab("Main")
+local TeleportsTab = win:Tab("Teleports")
+local MiscTab = win:Tab("Misc")
+
+local isEnabled = false
+local autofarmCoroutine = nil
+local cashAuraEnabled = false
+
+local isNewEnabled = false
+local newAutofarmCoroutine = nil
+
+while not game:IsLoaded() do wait() end
+repeat wait() until game.Players.LocalPlayer.Character
+
+local Players = game:GetService("Players")
+local VirtualUser = game:GetService("VirtualUser")
+
+local GC = getconnections or get_signal_cons
+if GC then
+    for i, v in pairs(GC(Players.LocalPlayer.Idled)) do
+        if v["Disable"] then v["Disable"](v)
+        elseif v["Disconnect"] then v["Disconnect"](v)
+        end
+    end
+else
+    Players.LocalPlayer.Idled:Connect(function()
+        VirtualUser:CaptureController()
+        VirtualUser:ClickButton2(Vector2.new())
+    end)
+end
+
+local function getMoneyAroundMe()
+    wait(0.7)
+    for i, money in ipairs(game.Workspace.Ignored.Drop:GetChildren()) do
+        if not cashAuraEnabled then return end
+        if money.Name == "MoneyDrop" and (money.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 20 then
+            fireclickdetector(money.ClickDetector)
+            wait(0.7)
+        end
+    end
+end
+
+local function startAutoFarm()
+    local humanoid = game.Players.LocalPlayer.Character.Humanoid
+    local tool = game.Players.LocalPlayer.Backpack.Combat
+    humanoid:EquipTool(tool)
+    while isEnabled do
+        for i, v in ipairs(game.Workspace.Cashiers:GetChildren()) do
+            if not isEnabled then return end
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Open.CFrame * CFrame.new(0, 0, 2)
+
+            wait(0.5)
+
+            for i = 0, 10 do
+                if not isEnabled then return end
+                wait(0.5)
+                tool:Activate()
+            end
+            getMoneyAroundMe()
+        end
+    end
+end
+
+local function newStartAutoFarm()
+    local humanoid = game.Players.LocalPlayer.Character.Humanoid
+    local tool = game.Players.LocalPlayer.Backpack:FindFirstChild("[Knife] - $150")
+    if not tool then
+        return -- Return if knife tool is not found in backpack
+    end
+    humanoid:EquipTool(tool)
+
+    while isNewEnabled do
+        -- New autofarm logic goes here
+        wait(1)
+    end
+end
+
+-- Main Tab (Original Autofarm)
+MainTab:Toggle("Atm Autofarm", false, function(t)
+    isEnabled = t
+    if isEnabled then
+        setfpscap(15)
+        wait(0.2)
+        game.StarterGui:SetCore("SendNotification", {
+            Title = "Fps",
+            Text = "Fps set to 15",
+            Duration = 5
+        })
+        if not autofarmCoroutine then
+            autofarmCoroutine = coroutine.create(startAutoFarm)
+            coroutine.resume(autofarmCoroutine)
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Guis/Cpu%20Saver"))()
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "Gui",
+                Text = "Press L to toggle the gui on and off",
+                Duration = 5
+            })
+        end
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Guis/Potato%20Graphics"))()
+    else
+        setfpscap(60)
+        wait(0.2)
+        game.StarterGui:SetCore("SendNotification", {
+            Title = "Fps",
+            Text = "Fps set to 60",
+            Duration = 5
+        })
+        if autofarmCoroutine then
+            coroutine.yield(autofarmCoroutine)
+            autofarmCoroutine = nil
+        end
+    end
+end)
+
+MainTab:Toggle("Cash Aura", false, function(t)
+    cashAuraEnabled = t
+    if cashAuraEnabled then
+        getMoneyAroundMe()
+    end
+end)
+
+MainTab:Button("Cash ESP", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Guis/Cash%20ESP"))()
+end)
+
+-- Main Tab (New Autofarm)
+MainTab:Toggle("Knife Autofarm", false, function(t)
+    isNewEnabled = t
+    if isNewEnabled then
+        -- Additional setup for new autofarm if needed
+        if not newAutofarmCoroutine then
+            newAutofarmCoroutine = coroutine.create(newStartAutoFarm)
+            coroutine.resume(newAutofarmCoroutine)
+        end
+    else
+        if newAutofarmCoroutine then
+            coroutine.yield(newAutofarmCoroutine)
+            newAutofarmCoroutine = nil
+        end
+    end
+end)
+
+-- Teleports Tab
+TeleportsTab:Button("Bank", function()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Teleports/Bank%20Tp"))()
+end)
+
+TeleportsTab:Button("Hood Fitness", function()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Teleports/Hood%20fitness%20TP"))()
+end)
+
+-- Misc Tab
+-- MiscTab:Button("Potato Graphics", function()
+-- end)
