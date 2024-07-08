@@ -72,7 +72,6 @@ local function newStartAutoFarm()
     humanoid:EquipTool(tool)
 
     while isNewEnabled do
-        -- Example: Knife autofarm logic (replace with actual knife logic)
         for i, enemy in ipairs(game.Workspace.Enemies:GetChildren()) do
             if isNewEnabled then
                 humanoid:MoveTo(enemy.Position)
@@ -87,7 +86,17 @@ local function newStartAutoFarm()
     end
 end
 
-local function purchaseKnife()
+local function teleportAndPurchaseKnife()
+    local targetPosition = Vector3.new(-277.65, 18.849, -236)
+    local player = game.Players.LocalPlayer
+    while not player.Character do
+        wait()
+    end
+    local character = player.Character or player.CharacterAdded:Wait()
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+    end
+    wait(1)  -- Wait a bit before purchasing
     local knife = game.Workspace.Ignored.Shop:FindFirstChild("[Knife] - $159")
     if knife then
         local clickDetector = knife:FindFirstChild("ClickDetector")
@@ -154,8 +163,8 @@ end)
 MainTab:Toggle("Knife Autofarm", false, function(t)
     isNewEnabled = t
     if isNewEnabled then
-        purchaseKnife() -- Purchase the knife when enabling Knife Autofarm
-        -- Additional setup for new autofarm if needed
+        teleportAndPurchaseKnife()  -- Teleport and purchase the knife when enabling Knife Autofarm
+        wait(1)  -- Wait a bit before starting the autofarm
         if not newAutofarmCoroutine then
             newAutofarmCoroutine = coroutine.create(newStartAutoFarm)
             coroutine.resume(newAutofarmCoroutine)
