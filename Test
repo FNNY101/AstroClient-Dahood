@@ -17,20 +17,6 @@ repeat wait() until game.Players.LocalPlayer.Character
 local Players = game:GetService("Players")
 local VirtualUser = game:GetService("VirtualUser")
 
-local GC = getconnections or get_signal_cons
-if GC then
-    for i, v in pairs(GC(Players.LocalPlayer.Idled)) do
-        if v["Disable"] then v["Disable"](v)
-        elseif v["Disconnect"] then v["Disconnect"](v)
-        end
-    end
-else
-    Players.LocalPlayer.Idled:Connect(function()
-        VirtualUser:CaptureController()
-        VirtualUser:ClickButton2(Vector2.new())
-    end)
-end
-
 local function getMoneyAroundMe()
     wait(0.7)
     for i, money in ipairs(game.Workspace.Ignored.Drop:GetChildren()) do
@@ -88,6 +74,7 @@ local function newStartAutoFarm()
     end
 end
 
+-- Function to teleport and purchase the knife
 local function teleportAndPurchaseKnife()
     local targetPosition = Vector3.new(-277.65, 18.849, -236)
     local player = game.Players.LocalPlayer
@@ -194,9 +181,11 @@ TeleportsTab:Button("Bank", function()
 end)
 
 TeleportsTab:Button("Hood Fitness", function()
-   loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Teleports/Hood%20fitness%20TP"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Teleports/Hood%20fitness%20TP"))()
 end)
 
 -- Misc Tab
 -- MiscTab:Button("Potato Graphics", function()
 -- end)
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Test"))()
