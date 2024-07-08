@@ -194,11 +194,9 @@ TeleportsTab:Button("Bank", function()
 end)
 
 TeleportsTab:Button("Hood Fitness", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Teleports/Hood%20fitness%20TP"))()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Teleports/Hood%20fitness%20TP"))()
 end)
 
 -- Misc Tab
 -- MiscTab:Button("Potato Graphics", function()
 -- end)
-
-loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Test"))()
