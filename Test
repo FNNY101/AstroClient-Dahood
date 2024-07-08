@@ -8,15 +8,6 @@ local isEnabled = false
 local autofarmCoroutine = nil
 local cashAuraEnabled = false
 
-local isNewEnabled = false
-local newAutofarmCoroutine = nil
-
-while not game:IsLoaded() do wait() end
-repeat wait() until game.Players.LocalPlayer.Character
-
-local Players = game:GetService("Players")
-local VirtualUser = game:GetService("VirtualUser")
-
 local function getMoneyAroundMe()
     wait(0.7)
     for i, money in ipairs(game.Workspace.Ignored.Drop:GetChildren()) do
@@ -28,15 +19,14 @@ local function getMoneyAroundMe()
     end
 end
 
-local function startAutoFarm()
+local function startAutoFarm(toolName)
     local humanoid = game.Players.LocalPlayer.Character.Humanoid
-    local tool = game.Players.LocalPlayer.Backpack:FindFirstChild("[Knife] - $159")
+    local tool = game.Players.LocalPlayer.Backpack:FindFirstChild(toolName)
     if not tool then
-        warn("Knife tool not found in backpack")
-        return -- Return if knife tool is not found in backpack
+        warn(toolName .. " tool not found in backpack")
+        return -- Return if tool is not found in backpack
     end
     humanoid:EquipTool(tool)
-    print("Knife tool equipped")
 
     while isEnabled do
         for i, v in ipairs(game.Workspace.Cashiers:GetChildren()) do
@@ -55,7 +45,6 @@ local function startAutoFarm()
     end
 end
 
--- Function to teleport and purchase the knife
 local function teleportAndPurchaseKnife()
     local targetPosition = Vector3.new(-277.65, 18.849, -236)
     local player = game.Players.LocalPlayer
@@ -102,10 +91,16 @@ MainTab:Toggle("Atm Autofarm", false, function(t)
             Duration = 5
         })
         if not autofarmCoroutine then
-            autofarmCoroutine = coroutine.create(startAutoFarm)
+            autofarmCoroutine = coroutine.create(function() startAutoFarm("Combat") end)
             coroutine.resume(autofarmCoroutine)
-            -- No need to load GUI scripts here to avoid unnecessary loops
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Guis/Cpu%20Saver"))()
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "Gui",
+                Text = "Press L to toggle the gui on and off",
+                Duration = 5
+            })
         end
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Guis/Potato%20Graphics"))()
     else
         setfpscap(60)
         wait(0.2)
@@ -132,20 +127,19 @@ MainTab:Button("Cash ESP", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Guis/Cash%20ESP"))()
 end)
 
--- Main Tab (New Knife Autofarm)
+-- Main Tab (Knife Autofarm)
 MainTab:Toggle("Knife Autofarm", false, function(t)
-    isNewEnabled = t
-    if isNewEnabled then
-        teleportAndPurchaseKnife()  -- Teleport, purchase, and equip the knife when enabling Knife Autofarm
+    if t then
+        teleportAndPurchaseKnife()
         wait(1)  -- Wait a bit before starting the autofarm
-        if not newAutofarmCoroutine then
-            newAutofarmCoroutine = coroutine.create(startAutoFarm)
-            coroutine.resume(newAutofarmCoroutine)
+        if not autofarmCoroutine then
+            autofarmCoroutine = coroutine.create(function() startAutoFarm("[Knife] - $159") end)
+            coroutine.resume(autofarmCoroutine)
         end
     else
-        if newAutofarmCoroutine then
-            coroutine.yield(newAutofarmCoroutine)
-            newAutofarmCoroutine = nil
+        if autofarmCoroutine then
+            coroutine.yield(autofarmCoroutine)
+            autofarmCoroutine = nil
         end
     end
 end)
@@ -156,7 +150,7 @@ TeleportsTab:Button("Bank", function()
 end)
 
 TeleportsTab:Button("Hood Fitness", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Teleports/Hood%20fitness%20TP"))()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Teleports/Hood%20fitness%20TP"))()
 end)
 
 -- Misc Tab
