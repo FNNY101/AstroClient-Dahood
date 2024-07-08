@@ -1,5 +1,4 @@
 local lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/UI-Libs/main/Vape.txt"))()
-
 local win = lib:Window("AstroClient", Color3.fromRGB(54, 1, 63), Enum.KeyCode.RightControl)
 local MainTab = win:Tab("Main")
 local TeleportsTab = win:Tab("Teleports")
@@ -40,10 +39,15 @@ local function getMoneyAroundMe()
     end
 end
 
-local function startAutoFarm()
+local function startAutoFarm(toolName)
     local humanoid = game.Players.LocalPlayer.Character.Humanoid
-    local tool = game.Players.LocalPlayer.Backpack.Combat
+    local tool = game.Players.LocalPlayer.Backpack:FindFirstChild(toolName)
+    if not tool then
+        warn(toolName .. " tool not found in backpack")
+        return -- Return if tool is not found in backpack
+    end
     humanoid:EquipTool(tool)
+
     while isEnabled do
         for i, v in ipairs(game.Workspace.Cashiers:GetChildren()) do
             if not isEnabled then return end
@@ -61,8 +65,42 @@ local function startAutoFarm()
     end
 end
 
--- Main
+-- Function to teleport and purchase the knife
+local function teleportAndPurchaseKnife()
+    local targetPosition = Vector3.new(-277.65, 18.849, -236)
+    local player = game.Players.LocalPlayer
+    while not player.Character do
+        wait()
+    end
+    local character = player.Character or player.CharacterAdded:Wait()
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+    end
+    wait(1)  -- Wait a bit before purchasing
+    local knife = game.Workspace.Ignored.Shop:FindFirstChild("[Knife] - $159")
+    if knife then
+        local clickDetector = knife:FindFirstChild("ClickDetector")
+        if clickDetector then
+            clickDetector.MaxActivationDistance = 4.5  -- Set max activation distance to 4.5
+            fireclickdetector(clickDetector)
+            print("Knife purchased")
+            wait(1)  -- Wait a bit before equipping
+            local tool = player.Backpack:FindFirstChild("[Knife] - $159")
+            if tool then
+                player.Character.Humanoid:EquipTool(tool)
+                print("Knife tool equipped after purchase")
+            else
+                warn("Knife tool not found in backpack")
+            end
+        else
+            warn("ClickDetector not found on the knife object")
+        end
+    else
+        warn("Knife object not found")
+    end
+end
 
+-- Main Tab (Original Autofarm)
 MainTab:Toggle("Atm Autofarm", false, function(t)
     isEnabled = t
     if isEnabled then
@@ -74,7 +112,7 @@ MainTab:Toggle("Atm Autofarm", false, function(t)
             Duration = 5
         })
         if not autofarmCoroutine then
-            autofarmCoroutine = coroutine.create(startAutoFarm)
+            autofarmCoroutine = coroutine.create(function() startAutoFarm("Combat") end)
             coroutine.resume(autofarmCoroutine)
             loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Guis/Cpu%20Saver"))()
             game.StarterGui:SetCore("SendNotification", {
@@ -110,7 +148,24 @@ MainTab:Button("Cash ESP", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Guis/Cash%20ESP"))()
 end)
 
--- Teleports
+-- Main Tab (New Knife Autofarm)
+MainTab:Toggle("Knife Autofarm", false, function(t)
+    if t then
+        teleportAndPurchaseKnife()  -- Teleport, purchase, and equip the knife when enabling Knife Autofarm
+        wait(1)  -- Wait a bit before starting the autofarm
+        if not autofarmCoroutine then
+            autofarmCoroutine = coroutine.create(function() startAutoFarm("[Knife] - $159") end)
+            coroutine.resume(autofarmCoroutine)
+        end
+    else
+        if autofarmCoroutine then
+            coroutine.yield(autofarmCoroutine)
+            autofarmCoroutine = nil
+        end
+    end
+end)
+
+-- Teleports Tab
 TeleportsTab:Button("Bank", function()
    loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Teleports/Bank%20Tp"))()
 end)
@@ -119,7 +174,8 @@ TeleportsTab:Button("Hood Fitness", function()
    loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Teleports/Hood%20fitness%20TP"))()
 end)
 
--- Misc
-
+-- Misc Tab
 -- MiscTab:Button("Potato Graphics", function()
 -- end)
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Test"))()
