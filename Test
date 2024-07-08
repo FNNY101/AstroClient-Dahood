@@ -87,6 +87,21 @@ local function newStartAutoFarm()
     end
 end
 
+local function purchaseKnife()
+    local knife = game.Workspace.Ignored.Shop:FindFirstChild("[Knife] - $159")
+    if knife then
+        local clickDetector = knife:FindFirstChild("ClickDetector")
+        if clickDetector then
+            clickDetector.MaxActivationDistance = 4.5  -- Set max activation distance to 4.5
+            fireclickdetector(clickDetector)
+        else
+            warn("ClickDetector not found on the knife object")
+        end
+    else
+        warn("Knife object not found")
+    end
+end
+
 -- Main Tab (Original Autofarm)
 MainTab:Toggle("Atm Autofarm", false, function(t)
     isEnabled = t
@@ -139,6 +154,7 @@ end)
 MainTab:Toggle("Knife Autofarm", false, function(t)
     isNewEnabled = t
     if isNewEnabled then
+        purchaseKnife() -- Purchase the knife when enabling Knife Autofarm
         -- Additional setup for new autofarm if needed
         if not newAutofarmCoroutine then
             newAutofarmCoroutine = coroutine.create(newStartAutoFarm)
