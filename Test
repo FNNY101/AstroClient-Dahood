@@ -63,29 +63,7 @@ local function startAutoFarm()
     end
 end
 
-local function newStartAutoFarm()
-    local humanoid = game.Players.LocalPlayer.Character.Humanoid
-    local tool = game.Players.LocalPlayer.Backpack:FindFirstChild("[Knife] - $150")
-    if not tool then
-        return -- Return if knife tool is not found in backpack
-    end
-    humanoid:EquipTool(tool)
 
-    while isNewEnabled do
-
-        for i, enemy in ipairs(game.Workspace.Enemies:GetChildren()) do
-            if isNewEnabled then
-                humanoid:MoveTo(enemy.Position)
-                wait(1)
-                tool:Activate()
-                wait(0.5)
-            else
-                break
-            end
-        end
-        wait(1)
-    end
-end
 
 -- Main Tab (Original Autofarm)
 MainTab:Toggle("Atm Autofarm", false, function(t)
@@ -173,12 +151,33 @@ MainTab:Toggle("Knife Autofarm", false, function(t)
 			else
 				warn("Knife object not found")
 			end
+			local function newStartAutoFarm()
+				local humanoid = game.Players.LocalPlayer.Character.Humanoid
+				local tool = game.Players.LocalPlayer.Backpack:FindFirstChild("[Knife] - $150")
+				if not tool then
+					return -- Return if knife tool is not found in backpack
+				end
+				humanoid:EquipTool(tool)
+			
+				while isNewEnabled do
+			
+					for i, enemy in ipairs(game.Workspace.Enemies:GetChildren()) do
+						if isNewEnabled then
+							humanoid:MoveTo(enemy.Position)
+							wait(1)
+							tool:Activate()
+							wait(0.5)
+						else
+							break
+						end
+					end
+					wait(1)
+				end
+			end
 			
 
     isNewEnabled = t
-    if isNewEnabled then
-        purchaseKnife() -- Purchase the knife when enabling Knife Autofarm
-        -- Additional setup for new autofarm if needed
+
         if not newAutofarmCoroutine then
             newAutofarmCoroutine = coroutine.create(newStartAutoFarm)
             coroutine.resume(newAutofarmCoroutine)
