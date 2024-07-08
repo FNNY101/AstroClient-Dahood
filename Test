@@ -30,8 +30,14 @@ end
 
 local function startAutoFarm()
     local humanoid = game.Players.LocalPlayer.Character.Humanoid
-    local tool = game.Players.LocalPlayer.Backpack.Combat
+    local tool = game.Players.LocalPlayer.Backpack:FindFirstChild("[Knife] - $159")
+    if not tool then
+        warn("Knife tool not found in backpack")
+        return -- Return if knife tool is not found in backpack
+    end
     humanoid:EquipTool(tool)
+    print("Knife tool equipped")
+
     while isEnabled do
         for i, v in ipairs(game.Workspace.Cashiers:GetChildren()) do
             if not isEnabled then return end
@@ -46,31 +52,6 @@ local function startAutoFarm()
             end
             getMoneyAroundMe()
         end
-    end
-end
-
-local function newStartAutoFarm()
-    local humanoid = game.Players.LocalPlayer.Character.Humanoid
-    local tool = game.Players.LocalPlayer.Backpack:FindFirstChild("[Knife] - $159")
-    if not tool then
-        warn("Knife tool not found in backpack")
-        return -- Return if knife tool is not found in backpack
-    end
-    humanoid:EquipTool(tool)
-    print("Knife tool equipped")
-
-    while isNewEnabled do
-        for i, enemy in ipairs(game.Workspace.Enemies:GetChildren()) do
-            if isNewEnabled then
-                humanoid:MoveTo(enemy.Position)
-                wait(1)
-                tool:Activate()
-                wait(0.5)
-            else
-                break
-            end
-        end
-        wait(1)
     end
 end
 
@@ -157,14 +138,14 @@ MainTab:Button("Cash ESP", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Guis/Cash%20ESP"))()
 end)
 
--- Main Tab (New Autofarm)
+-- Main Tab (New Knife Autofarm)
 MainTab:Toggle("Knife Autofarm", false, function(t)
     isNewEnabled = t
     if isNewEnabled then
         teleportAndPurchaseKnife()  -- Teleport, purchase, and equip the knife when enabling Knife Autofarm
         wait(1)  -- Wait a bit before starting the autofarm
         if not newAutofarmCoroutine then
-            newAutofarmCoroutine = coroutine.create(newStartAutoFarm)
+            newAutofarmCoroutine = coroutine.create(startAutoFarm)
             coroutine.resume(newAutofarmCoroutine)
         end
     else
