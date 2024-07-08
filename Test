@@ -104,14 +104,8 @@ MainTab:Toggle("Atm Autofarm", false, function(t)
         if not autofarmCoroutine then
             autofarmCoroutine = coroutine.create(startAutoFarm)
             coroutine.resume(autofarmCoroutine)
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Guis/Cpu%20Saver"))()
-            game.StarterGui:SetCore("SendNotification", {
-                Title = "Gui",
-                Text = "Press L to toggle the gui on and off",
-                Duration = 5
-            })
+            -- No need to load GUI scripts here to avoid unnecessary loops
         end
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Guis/Potato%20Graphics"))()
     else
         setfpscap(60)
         wait(0.2)
