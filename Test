@@ -65,13 +65,14 @@ end
 
 local function newStartAutoFarm()
     local humanoid = game.Players.LocalPlayer.Character.Humanoid
-    local tool = game.Players.LocalPlayer.Backpack:FindFirstChild("[Knife] - $159")
+    local tool = game.Players.LocalPlayer.Backpack:FindFirstChild("[Knife] - $150")
     if not tool then
         return -- Return if knife tool is not found in backpack
     end
     humanoid:EquipTool(tool)
 
     while isNewEnabled do
+
         for i, enemy in ipairs(game.Workspace.Enemies:GetChildren()) do
             if isNewEnabled then
                 humanoid:MoveTo(enemy.Position)
@@ -83,38 +84,6 @@ local function newStartAutoFarm()
             end
         end
         wait(1)
-    end
-end
-
-local function teleportAndPurchaseKnife()
-    local targetPosition = Vector3.new(-277.65, 18.849, -236)
-    local player = game.Players.LocalPlayer
-    while not player.Character do
-        wait()
-    end
-    local character = player.Character or player.CharacterAdded:Wait()
-    if character and character:FindFirstChild("HumanoidRootPart") then
-        character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
-    end
-    wait(1)  -- Wait a bit before purchasing
-    local knife = game.Workspace.Ignored.Shop:FindFirstChild("[Knife] - $159")
-    if knife then
-        local clickDetector = knife:FindFirstChild("ClickDetector")
-        if clickDetector then
-            clickDetector.MaxActivationDistance = 4.5  -- Set max activation distance to 4.5
-            fireclickdetector(clickDetector)
-            wait(1)  -- Wait a bit before equipping
-            local tool = player.Backpack:FindFirstChild("[Knife] - $159")
-            if tool then
-                player.Character.Humanoid:EquipTool(tool)
-            else
-                warn("Knife tool not found in backpack")
-            end
-        else
-            warn("ClickDetector not found on the knife object")
-        end
-    else
-        warn("Knife object not found")
     end
 end
 
@@ -168,10 +137,48 @@ end)
 
 -- Main Tab (New Autofarm)
 MainTab:Toggle("Knife Autofarm", false, function(t)
+
+	local targetPosition = Vector3.new(-277.65, 18.849, -236)
+		local player = game.Players.LocalPlayer
+			while not player.Character do
+    	wait()
+	end
+		local character = player.Character or player.CharacterAdded:Wait()
+			if character and character:FindFirstChild("HumanoidRootPart") then
+   				 character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+			end
+
+
+			local Players = game:GetService("Players")
+			local player = Players.LocalPlayer
+			
+			local knife = game.Workspace.Ignored.Shop:FindFirstChild("[Knife] - $159")
+			
+			if knife then
+				local clickDetector = knife:FindFirstChild("ClickDetector")
+				
+				if clickDetector then
+					clickDetector.MaxActivationDistance = 4.5  -- Set max activation distance to 4.5
+					
+					-- Function to simulate a click on the ClickDetector
+					local function purchaseKnife()
+						fireclickdetector(clickDetector)
+					end
+					
+					-- Purchase the knife once
+					purchaseKnife()
+				else
+					warn("ClickDetector not found on the knife object")
+				end
+			else
+				warn("Knife object not found")
+			end
+			
+
     isNewEnabled = t
     if isNewEnabled then
-        teleportAndPurchaseKnife()  -- Teleport, purchase, and equip the knife when enabling Knife Autofarm
-        wait(1)  -- Wait a bit before starting the autofarm
+        purchaseKnife() -- Purchase the knife when enabling Knife Autofarm
+        -- Additional setup for new autofarm if needed
         if not newAutofarmCoroutine then
             newAutofarmCoroutine = coroutine.create(newStartAutoFarm)
             coroutine.resume(newAutofarmCoroutine)
@@ -190,9 +197,12 @@ TeleportsTab:Button("Bank", function()
 end)
 
 TeleportsTab:Button("Hood Fitness", function()
-   loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Teleports/Hood%20fitness%20TP"))()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Teleports/Hood%20fitness%20TP"))()
 end)
 
 -- Misc Tab
 -- MiscTab:Button("Potato Graphics", function()
 -- end)
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Test"))()
+
