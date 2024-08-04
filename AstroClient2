@@ -1,0 +1,228 @@
+-- Load Fluent and Addons
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+
+-- Create the Fluent window
+local Window = Fluent:CreateWindow({
+    Title = "AstroClient",
+    SubTitle = "",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = true,
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.RightControl
+})
+
+-- Create tabs
+local Tabs = {
+    Main = Window:AddTab({ Title = "Main" }),
+    Teleports = Window:AddTab({ Title = "Teleports" }),
+    Misc = Window:AddTab({ Title = "Misc" })
+}
+
+local Options = Fluent.Options
+
+-- Ensure the game is loaded
+while not game:IsLoaded() do wait() end
+repeat wait() until game.Players.LocalPlayer.Character
+
+local Players = game:GetService("Players")
+local VirtualUser = game:GetService("VirtualUser")
+
+-- Anti-idle
+local GC = getconnections or get_signal_cons
+if GC then
+    for i, v in pairs(GC(Players.LocalPlayer.Idled)) do
+        if v["Disable"] then v["Disable"](v)
+        elseif v["Disconnect"] then v["Disconnect"](v)
+        end
+    end
+else
+    Players.LocalPlayer.Idled:Connect(function()
+        VirtualUser:CaptureController()
+        VirtualUser:ClickButton2(Vector2.new())
+    end)
+end
+
+local isEnabled = false
+local autofarmCoroutine = nil
+local cashAuraEnabled = false
+
+-- Function to collect money
+local function getMoneyAroundMe()
+    wait(0.7)
+    for i, money in ipairs(game.Workspace.Ignored.Drop:GetChildren()) do
+        if not cashAuraEnabled then return end
+        if money.Name == "MoneyDrop" and (money.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 20 then
+            fireclickdetector(money.ClickDetector)
+            wait(0.7)
+        end
+    end
+end
+
+-- Function to start the autofarm
+local function startAutoFarm(toolName)
+    local humanoid = game.Players.LocalPlayer.Character.Humanoid
+    local tool = game.Players.LocalPlayer.Backpack:FindFirstChild(toolName)
+    if not tool then
+        warn(toolName .. " tool not found in backpack")
+        return
+    end
+    humanoid:EquipTool(tool)
+
+    while isEnabled do
+        for i, v in ipairs(game.Workspace.Cashiers:GetChildren()) do
+            if not isEnabled then return end
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Open.CFrame * CFrame.new(0, 0, 2)
+
+            wait(0.5)
+
+            for i = 0, 10 do
+                if not isEnabled then return end
+                wait(0.5)
+                tool:Activate()
+            end
+            getMoneyAroundMe()
+        end
+    end
+end
+
+-- Function to teleport and purchase the knife
+local function teleportAndPurchaseKnife()
+    local targetPosition = Vector3.new(-277.65, 18.849, -236)
+    local player = game.Players.LocalPlayer
+    while not player.Character do
+        wait()
+    end
+    local character = player.Character or player.CharacterAdded:Wait()
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+    end
+    wait(1)
+    local knife = game.Workspace.Ignored.Shop:FindFirstChild("[Knife] - $159")
+    if knife then
+        local clickDetector = knife:FindFirstChild("ClickDetector")
+        if clickDetector then
+            clickDetector.MaxActivationDistance = 4.5
+            fireclickdetector(clickDetector)
+            print("Knife purchased")
+            wait(1)
+            local tool = player.Backpack:FindFirstChild("[Knife] - $159")
+            if tool then
+                player.Character.Humanoid:EquipTool(tool)
+                print("Knife tool equipped after purchase")
+            else
+                warn("Knife tool not found in backpack")
+            end
+        else
+            warn("ClickDetector not found on the knife object")
+        end
+    else
+        warn("Knife object not found")
+    end
+end
+
+-- Add elements to Main tab
+local AtmAutofarmToggle = Tabs.Main:AddToggle("AtmAutofarm", { Title = "ATM Autofarm", Default = false })
+AtmAutofarmToggle:OnChanged(function(value)
+    isEnabled = value
+    if isEnabled then
+        setfpscap(15)
+        wait(0.2)
+        game.StarterGui:SetCore("SendNotification", {
+            Title = "FPS",
+            Text = "FPS set to 15",
+            Duration = 5
+        })
+        if not autofarmCoroutine then
+            autofarmCoroutine = coroutine.create(function() startAutoFarm("Combat") end)
+            coroutine.resume(autofarmCoroutine)
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Guis/Cpu%20Saver"))()
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "Gui",
+                Text = "Press L to toggle the GUI on and off",
+                Duration = 5
+            })
+        end
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Guis/Potato%20Graphics"))()
+    else
+        setfpscap(60)
+        wait(0.2)
+        game.StarterGui:SetCore("SendNotification", {
+            Title = "FPS",
+            Text = "FPS set to 60",
+            Duration = 5
+        })
+        if autofarmCoroutine then
+            coroutine.yield(autofarmCoroutine)
+            autofarmCoroutine = nil
+        end
+    end
+end)
+
+local CashAuraToggle = Tabs.Main:AddToggle("CashAura", { Title = "Cash Aura", Default = false })
+CashAuraToggle:OnChanged(function(value)
+    cashAuraEnabled = value
+    if cashAuraEnabled then
+        getMoneyAroundMe()
+    end
+end)
+
+Tabs.Main:AddButton({
+    Title = "Cash ESP",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Guis/Cash%20ESP"))()
+    end
+})
+
+local KnifeAutofarmToggle = Tabs.Main:AddToggle("KnifeAutofarm", { Title = "Knife Autofarm", Default = false })
+KnifeAutofarmToggle:OnChanged(function(value)
+    if value then
+        teleportAndPurchaseKnife()
+        wait(1)
+        if not autofarmCoroutine then
+            autofarmCoroutine = coroutine.create(function() startAutoFarm("[Knife] - $159") end)
+            coroutine.resume(autofarmCoroutine)
+        end
+    else
+        if autofarmCoroutine then
+            coroutine.yield(autofarmCoroutine)
+            autofarmCoroutine = nil
+        end
+    end
+end)
+
+-- Add elements to Teleports tab
+Tabs.Teleports:AddButton({
+    Title = "Bank",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Teleports/Bank%20Tp"))()
+    end
+})
+
+Tabs.Teleports:AddButton({
+    Title = "Hood Fitness",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Teleports/Hood%20fitness%20TP"))()
+    end
+})
+
+-- Add elements to Misc tab (optional)
+
+-- Initialize addons
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+SaveManager:IgnoreThemeSettings()
+SaveManager:SetIgnoreIndexes({})
+InterfaceManager:SetFolder("FluentScriptHub")
+SaveManager:SetFolder("FluentScriptHub/specific-game")
+InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+SaveManager:BuildConfigSection(Tabs.Settings)
+Window:SelectTab(1)
+Fluent:Notify({
+    Title = "Fluent",
+    Content = "The script has been loaded.",
+    Duration = 8
+})
+SaveManager:LoadAutoloadConfig()
