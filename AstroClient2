@@ -161,21 +161,6 @@ AtmAutofarmToggle:OnChanged(function(value)
     end
 end)
 
-local CashAuraToggle = Tabs.Main:AddToggle("CashAura", { Title = "Cash Aura", Default = false })
-CashAuraToggle:OnChanged(function(value)
-    cashAuraEnabled = value
-    if cashAuraEnabled then
-        getMoneyAroundMe()
-    end
-end)
-
-Tabs.Main:AddButton({
-    Title = "Cash ESP",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Guis/Cash%20ESP"))()
-    end
-})
-
 local KnifeAutofarmToggle = Tabs.Main:AddToggle("KnifeAutofarm", { Title = "Knife Autofarm", Default = false })
 KnifeAutofarmToggle:OnChanged(function(value)
     if value then
@@ -193,20 +178,162 @@ KnifeAutofarmToggle:OnChanged(function(value)
     end
 end)
 
+local CashAuraToggle = Tabs.Main:AddToggle("CashAura", { Title = "Cash Aura", Default = false })
+CashAuraToggle:OnChanged(function(value)
+    cashAuraEnabled = value
+    if cashAuraEnabled then
+        getMoneyAroundMe()
+    end
+end)
+
+Tabs.Main:AddButton({
+    Title = "Cash ESP",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Guis/Cash%20ESP"))()
+    end
+})
+
 -- Add elements to Teleports tab
 Tabs.Teleports:AddButton({
     Title = "Bank",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Teleports/Bank%20Tp"))()
+local targetPosition = Vector3.new(-373, 18.75, -346)
+local player = game.Players.LocalPlayer
+while not player.Character do
+    wait()
+end
+local character = player.Character or player.CharacterAdded:Wait()
+if character and character:FindFirstChild("HumanoidRootPart") then
+    character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+end
+
     end
 })
 
 Tabs.Teleports:AddButton({
     Title = "Hood Fitness",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Teleports/Hood%20fitness%20TP"))()
+local targetPosition = Vector3.new(-76, 19.45, -594.25)
+local player = game.Players.LocalPlayer
+while not player.Character do
+    wait()
+end
+local character = player.Character or player.CharacterAdded:Wait()
+if character and character:FindFirstChild("HumanoidRootPart") then
+    character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+end
+
     end
 })
+
+Tabs.Teleports:AddButton({
+    Title = "Club",
+    Callback = function()
+local targetPosition = Vector3.new(-265, -8.708, -374.5)
+local player = game.Players.LocalPlayer
+while not player.Character do
+    wait()
+end
+local character = player.Character or player.CharacterAdded:Wait()
+if character and character:FindFirstChild("HumanoidRootPart") then
+    character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+end
+    end
+})
+
+Tabs.Teleports:AddButton({
+    Title = "School",
+    Callback = function()
+local targetPosition = Vector3.new(-652.5, 18.75, 197.5)
+local player = game.Players.LocalPlayer
+while not player.Character do
+    wait()
+end
+local character = player.Character or player.CharacterAdded:Wait()
+if character and character:FindFirstChild("HumanoidRootPart") then
+    character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+end
+    end
+})
+
+
+Tabs.Teleports:AddButton({
+    Title = "BasketBall Court",
+    Callback = function()
+local targetPosition = Vector3.new(-932, 19.6, -482.25)
+local player = game.Players.LocalPlayer
+while not player.Character do
+    wait()
+end
+local character = player.Character or player.CharacterAdded:Wait()
+if character and character:FindFirstChild("HumanoidRootPart") then
+    character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+end
+    end
+})
+
+Tabs.Teleports:AddButton({
+    Title = "Uphill Gunz",
+    Callback = function()
+local targetPosition = Vector3.new(-562.75, 5.66, -736.25)
+local player = game.Players.LocalPlayer
+while not player.Character do
+    wait()
+end
+local character = player.Character or player.CharacterAdded:Wait()
+if character and character:FindFirstChild("HumanoidRootPart") then
+    character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+end
+    end
+})
+
+Tabs.Teleports:AddButton({
+    Title = "Hospital",
+    Callback = function()
+local targetPosition = Vector3.new(80, 19.255, -484.75)
+local player = game.Players.LocalPlayer
+while not player.Character do
+    wait()
+end
+local character = player.Character or player.CharacterAdded:Wait()
+if character and character:FindFirstChild("HumanoidRootPart") then
+    character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+end
+    end
+})
+
+Tabs.Teleports:AddButton({
+    Title = "Ufo",
+    Callback = function()
+local targetPosition = Vector3.new(49.75, 159.75, -686.25)
+local player = game.Players.LocalPlayer
+while not player.Character do
+    wait()
+end
+local character = player.Character or player.CharacterAdded:Wait()
+if character and character:FindFirstChild("HumanoidRootPart") then
+    character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+end
+    end
+})
+
+Tabs.Teleports:AddButton({
+    Title = "Hood Fitness",
+    Callback = function()
+local targetPosition = Vector3.new(-75.25, 21.2, -588.75)
+local player = game.Players.LocalPlayer
+while not player.Character do
+    wait()
+end
+local character = player.Character or player.CharacterAdded:Wait()
+if character and character:FindFirstChild("HumanoidRootPart") then
+    character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+end
+    end
+})
+
+
+
 
 -- Add elements to Misc tab (optional)
 
@@ -226,3 +353,5 @@ Fluent:Notify({
     Duration = 8
 })
 SaveManager:LoadAutoloadConfig()
+
+
