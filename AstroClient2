@@ -186,12 +186,75 @@ CashAuraToggle:OnChanged(function(value)
     end
 end)
 
+-- Add the CashDrop toggle
+local CashDropToggle = Tabs.Main:AddToggle("CashDrop", { Title = "Cash Drop", Default = false })
+CashDropToggle:OnChanged(function(value)
+    if value then
+        while CashDropToggle.Value do
+            dropMoney(10000)  -- Drop $10,000
+            wait(5)  -- Adjust the wait time if needed
+        end
+    end
+end)
+function dropMoney(amount)
+    game:GetService("ReplicatedStorage").MainEvent:FireServer("DropMoney", "" .. amount)
+end
+
+
+
+
 Tabs.Main:AddButton({
     Title = "Cash ESP",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/FNNY101/Astrohub-Dahood/main/Guis/Cash%20ESP"))()
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local HighlightMaterial = Instance.new("Color3Value")
+HighlightMaterial.Name = "HighlightMaterial"
+HighlightMaterial.Value = Color3.fromRGB(0, 255, 0) -- Neon green color
+HighlightMaterial.Parent = ReplicatedStorage
+
+local function applyESP(part)
+    if not part or not part:IsA("BasePart") or part.Name ~= "MoneyDrop" then
+        return
+    end
+
+    local highlight = Instance.new("BoxHandleAdornment")
+    highlight.Size = part.Size * 1.1
+    highlight.Color3 = HighlightMaterial.Value
+    highlight.Transparency = 0.3
+    highlight.AlwaysOnTop = true  -- Ensure it's always rendered on top
+    highlight.ZIndex = 1  -- Set a high ZIndex to render above other parts
+    highlight.Adornee = part
+    highlight.Parent = part
+end
+
+local function monitorDropsFolder()
+    local dropsFolder = Workspace:WaitForChild("Ignored"):WaitForChild("Drop")
+
+    for _, part in ipairs(dropsFolder:GetChildren()) do
+        applyESP(part)
+    end
+
+    dropsFolder.ChildAdded:Connect(function(part)
+        applyESP(part)
+    end)
+end
+
+monitorDropsFolder()
+
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "ESP Script",
+    Text = "ESP script has successfully loaded. Made by Finny <3",
+    Duration = 5,
+})
+
+print("ESP script loaded.")
+
     end
 })
+
 
 -- Add elements to Teleports tab
 Tabs.Teleports:AddButton({
@@ -353,5 +416,4 @@ Fluent:Notify({
     Duration = 8
 })
 SaveManager:LoadAutoloadConfig()
-
 
