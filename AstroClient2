@@ -292,7 +292,7 @@ end
 Tabs.Teleports:AddButton({
     Title = "Club",
     Callback = function()
-local targetPosition = Vector3.new(-265, -8.708, -374.5)
+local targetPosition = Vector3.new(-262.5, -6.208, -376)
 local player = game.Players.LocalPlayer
 while not player.Character do
     wait()
