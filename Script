@@ -292,7 +292,7 @@ end
 Tabs.Teleports:AddButton({
     Title = "Club",
     Callback = function()
-local targetPosition = Vector3.new(-262.5, -6.208, -376)
+local targetPosition = Vector3.new(-262.5, -1.208, -376)
 local player = game.Players.LocalPlayer
 while not player.Character do
     wait()
@@ -397,6 +397,81 @@ end
 
 
 
+Tabs.Misc:AddButton({
+    Title = "Destroy the map (recommended for autofarm)",
+    Callback = function()
+        local function destroyFolderContents(folder)
+            if folder then
+                for _, child in ipairs(folder:GetChildren()) do
+                    child:Destroy()
+                end
+            else
+                warn("Specified folder does not exist")
+            end
+        end
+
+        local function addAnchoredPart(position, size, color, transparency)
+            local part = Instance.new("Part")
+            part.Position = position
+            part.Size = size
+            part.Anchored = true
+            part.Color = color
+            part.Transparency = transparency
+            part.Parent = game.Workspace
+        end
+
+        local mapFolderPath = game.Workspace:FindFirstChild("MAP")
+        local lightsFolderPath = game.Workspace:FindFirstChild("Lights")
+        local ignoredFolderPath = game.Workspace:FindFirstChild("Ignored")
+
+        if mapFolderPath then
+            local mapSubFolder = mapFolderPath:FindFirstChild("Map")
+            destroyFolderContents(mapSubFolder)
+        else
+            warn("Folder 'MAP' does not exist in Workspace")
+        end
+
+        if mapFolderPath then
+            local mapLightsSubFolder = mapFolderPath:FindFirstChild("Lights")
+            destroyFolderContents(mapLightsSubFolder)
+        else
+            warn("Folder 'MAP' does not exist in Workspace")
+        end
+
+        destroyFolderContents(lightsFolderPath)
+
+        if ignoredFolderPath then
+            local houseOwnFolder = ignoredFolderPath:FindFirstChild("HouseOwn")
+            local houseItemSaleFolder = ignoredFolderPath:FindFirstChild("HouseItemSale")
+            destroyFolderContents(houseOwnFolder)
+            destroyFolderContents(houseItemSaleFolder)
+        else
+            warn("Folder 'Ignored' does not exist in Workspace")
+        end
+
+        local partsData = {
+            {size = Vector3.new(167, 1, 31.5), position = Vector3.new(-935.5, 18, -660.25)},
+            {size = Vector3.new(15, 1, 17.25), position = Vector3.new(-558, 18.5, 269.625)},
+            {size = Vector3.new(22.75, 1, 19), position = Vector3.new(-611.875, 18, 272.25)},
+            {size = Vector3.new(39.5, 1, 19.5), position = Vector3.new(586.25, 48, -470.5)},
+            {size = Vector3.new(19.5, 1, 18.75), position = Vector3.new(583.5, 45.125, -275.375)},
+            {size = Vector3.new(20.5, 1, 20.75), position = Vector3.new(-401.5, 18.005, -590.625)},
+            {size = Vector3.new(20.25, 1, 20.5), position = Vector3.new(517.625, 44.5, -302)}
+        }
+
+        for _, data in ipairs(partsData) do
+            addAnchoredPart(data.position, data.size, Color3.fromRGB(255, 0, 0), 0.5) -- Set transparency as needed
+        end
+    end
+})
+
+
+
+
+
+
+
+
 
 -- Add elements to Misc tab (optional)
 
@@ -416,4 +491,6 @@ Fluent:Notify({
     Duration = 8
 })
 SaveManager:LoadAutoloadConfig()
+
+
 
