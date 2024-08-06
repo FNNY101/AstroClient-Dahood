@@ -6,7 +6,7 @@ local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.
 -- Create the Fluent window
 local Window = Fluent:CreateWindow({
     Title = "AstroClient",
-    SubTitle = "",
+    SubTitle = "Made by Finny<3",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
     Acrylic = true,
@@ -18,8 +18,10 @@ local Window = Fluent:CreateWindow({
 local Tabs = {
     Main = Window:AddTab({ Title = "Main" }),
     Teleports = Window:AddTab({ Title = "Teleports" }),
-    Misc = Window:AddTab({ Title = "Misc" })
+    Misc = Window:AddTab({ Title = "Misc" }),
+    Settings = Window:AddTab({ Title = "Settings"})
 }
+
 
 local Options = Fluent.Options
 
@@ -473,6 +475,10 @@ Tabs.Misc:AddButton({
 
 
 
+
+
+
+
 -- Add elements to Misc tab (optional)
 
 -- Initialize addons
@@ -485,11 +491,6 @@ SaveManager:SetFolder("FluentScriptHub/specific-game")
 InterfaceManager:BuildInterfaceSection(Tabs.Settings)
 SaveManager:BuildConfigSection(Tabs.Settings)
 Window:SelectTab(1)
-Fluent:Notify({
-    Title = "Fluent",
-    Content = "The script has been loaded.",
-    Duration = 8
-})
 SaveManager:LoadAutoloadConfig()
 
 
